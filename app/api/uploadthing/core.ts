@@ -29,7 +29,7 @@ export const ourFileRouter = {
       return { uploadedBy: metadata.userId };
     }),
   fileUploader: f({
-    'application/zip': {
+    'blob': {
       maxFileCount: 1,
     },
   })

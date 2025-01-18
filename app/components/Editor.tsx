@@ -1,7 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { EditorContent, useEditor, type Editor } from "@tiptap/react";
+import { EditorContent, JSONContent, useEditor, type Editor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 
 export function MenuBar({ editor }: { editor: Editor | null }) {
@@ -84,14 +84,18 @@ export function MenuBar({ editor }: { editor: Editor | null }) {
   );
 }
 
-export function TipTapEditor() {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export function TipTapEditor({json, setJson} : {setJson: any, json: JSONContent | null}) {
   const editor = useEditor({
     extensions: [StarterKit],
-    content: "<p>Describe your product</p>",
+    content: json ,
     editorProps:{
       attributes:{
         class: 'focus:outline-none min-h-[150px] prose prose-sm sm:prose-base'
       }
+    },
+    onUpdate: ({editor}) =>{
+      setJson(editor.getJSON())
     }
   });
 
