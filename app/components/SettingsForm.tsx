@@ -4,6 +4,10 @@ import { CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from 
 import { Input } from "@/components/ui/input";
 import { Label } from "@radix-ui/react-dropdown-menu";
 import SubmitButton from "./SubmitButton";
+import { useFormState } from "react-dom";
+import { State, updateUserSettings } from "../actions";
+import { useEffect } from "react";
+import { toast } from "sonner";
 
 interface iAppProps {
     firstName: string;
@@ -12,8 +16,22 @@ interface iAppProps {
 }
 
 export default function SettingsForm({email,firstName,lastName} : iAppProps) {
+    const initialState: State = {
+        message: '',
+        status: undefined
+    }
+    const [state, formAction] = useFormState(updateUserSettings, initialState)
+
+    useEffect(() => {
+        if(state?.status === "success") {
+            toast.success(state?.message)
+        } else if(state?.status === "error") {
+            toast.error(state?.message)
+        }
+    },[state])
+    
   return (
-    <form>
+    <form action={formAction}>
         <CardHeader>
             <CardTitle>Settings</CardTitle>
             <CardDescription>Settings regarding your account</CardDescription>

@@ -26,6 +26,11 @@ const productSchema = z.object({
   productFile: z.string().min(1, { message: "Product file is required" }),
 });
 
+const userSettingsSchema = z.object({
+  firstName: z.string().min(3, {message: "First name must be at least 3 characters long"}).or(z.literal("")).optional(),
+  lastName: z.string().min(3, {message: "Last name must be at least 3 characters long"}).or(z.literal("")).optional(),
+})
+
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function SellProduct(prevState: any, formData: FormData) {
   const { getUser } = getKindeServerSession();
@@ -72,4 +77,44 @@ export async function SellProduct(prevState: any, formData: FormData) {
     message: "Product has been created successfully",
   };
   return state;
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export async function updateUserSettings(prevState: any,formData: FormData){
+  const { getUser } = getKindeServerSession();
+  const user = await getUser();
+
+  if(!user){
+    throw new Error("something went wrong")
+  }
+
+  const validateFields = userSettingsSchema.safeParse({
+    firstName: formData.get('firstName'),
+    lastName: formData.get('lastName')
+  })
+
+  if(!validateFields.success){
+    const state: State = {
+      status: "error",
+      errors: validateFields.error.flatten().fieldErrors,
+      message: "Something went wrong"
+    }
+    return state
+  }
+  
+  await prisma.user.update({
+    where: {
+      id: user.id
+    },
+    data:{
+      firstName: validateFields.data.firstName,
+      lastName: validateFields.data.lastName,
+    }
+  })
+
+  const state:State = {
+    status: "success",
+    message: "User has been updated successfully"
+  }
+  return state
 }
