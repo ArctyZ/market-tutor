@@ -10,6 +10,7 @@ import {
 import prisma from "@/lib/db";
 import Image from "next/image";
 import { JSONContent } from "@tiptap/react";
+import { buyProduct } from "@/app/actions";
 
 async function getData(id: string) {
   const data = await prisma.product.findUnique({
@@ -17,6 +18,7 @@ async function getData(id: string) {
       id: id,
     },
     select: {
+      id: true,
       category: true,
       description: true,
       smallDescription: true,
@@ -68,9 +70,12 @@ export default async function ProductPage({
           {data?.name}
         </h1>
         <p className="mt-2 text-muted-foreground">{data?.smallDescription}</p>
-        <Button size="lg" className="w-full mt-10">
+        <form action={buyProduct}>
+          <input type="hidden" name="id" value={data?.id} />
+          <Button type="submit" size="lg" className="w-full mt-10">
           Buy for ${data?.price}
         </Button>
+        </form>
 
         <div className="border-t border-gray-400 mt-10 pt-10">
           <div className="grid grid-cols-2 w-full gap-y-3">

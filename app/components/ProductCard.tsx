@@ -6,6 +6,7 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel";
+import { Skeleton } from "@/components/ui/skeleton";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -62,4 +63,18 @@ export default function ProductCard({
       </Button>
     </div>
   );
+}
+
+export function LoadingProduct(){
+  return(
+    <div className="flex flex-col">
+      <Skeleton className="h-[230px] w-full" />
+      <div className="flex flex-cil mt-2 gap-y-2">
+        <Skeleton className="h-4 w-full"/>
+        <Skeleton className="h-6 w-full"/>
+      </div>
+
+      <Skeleton className="w-full h-10 mt-5"/>
+    </div>
+  )
 }
